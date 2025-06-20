@@ -1,1 +1,195 @@
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+const LabQualityIndicators = () => {
+  // Equipment downtime data (in hours)
+  const downtimeData = [
+    { month: 'Jan', hours: 3 },
+    { month: 'Feb', hours: 4 },
+    { month: 'Mar', hours: 0 },
+    { month: 'Apr', hours: 0 },
+    { month: 'May', hours: 3.25 },
+    { month: 'Jun', hours: 4 },
+    { month: 'Jul', hours: 11 }, // Peak due to Cobas integra-4200 spare part issue
+    { month: 'Aug', hours: 0 },
+    { month: 'Sep', hours: 3 },
+    { month: 'Oct', hours: 0 },
+    { month: 'Nov', hours: 2.81 },
+    { month: 'Dec', hours: 20 } // Highest downtime
+  ];
+
+  // CV% (Coefficient of Variation) data
+  const cvData = [
+    { month: 'Jan', cv: 0.11 },
+    { month: 'Feb', cv: 0.24 },
+    { month: 'Mar', cv: 0.15 },
+    { month: 'Apr', cv: 0.14 },
+    { month: 'May', cv: 0.07 },
+    { month: 'Jun', cv: 0.17 },
+    { month: 'Jul', cv: 0.08 },
+    { month: 'Aug', cv: 0.20 },
+    { month: 'Sep', cv: 0.00 },
+    { month: 'Oct', cv: 0.26 },
+    { month: 'Nov', cv: 0.20 },
+    { month: 'Dec', cv: 0.30 }
+  ];
+
+  // EQAS Z-Score data
+  const zScoreData = [
+    { month: 'Jan', zScore: -0.20 },
+    { month: 'Feb', zScore: -0.40 },
+    { month: 'Mar', zScore: 0.11 },
+    { month: 'Apr', zScore: 0.24 },
+    { month: 'May', zScore: 0.15 },
+    { month: 'Jun', zScore: 0.14 },
+    { month: 'Jul', zScore: 0.07 },
+    { month: 'Aug', zScore: 0.17 },
+    { month: 'Sep', zScore: 0.08 },
+    { month: 'Oct', zScore: 0.20 },
+    { month: 'Nov', zScore: 0.00 },
+    { month: 'Dec', zScore: 0.26 }
+  ];
+
+  return (
+    <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            Laboratory Quality Indicators Dashboard
+          </h1>
+          <p className="text-gray-600">Department of Laboratory Services - Analytical QI Report</p>
+        </div>
+
+        {/* Equipment Downtime Chart */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Average Equipment Downtime (Hours)
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={downtimeData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip 
+                formatter={(value) => [`${value} hours`, 'Downtime']}
+                labelStyle={{ color: '#374151' }}
+              />
+              <Legend />
+              <Bar 
+                dataKey="hours" 
+                fill="#ef4444" 
+                name="Downtime Hours"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+          <p className="text-sm text-gray-600 mt-2">
+            * Peak in July due to Cobas integra-4200 spare part unavailability
+          </p>
+        </div>
+
+        {/* CV% Chart */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Monthly Average CV% (Coefficient of Variation)
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={cvData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip 
+                formatter={(value) => [`${(value * 100).toFixed(1)}%`, 'CV%']}
+                labelStyle={{ color: '#374151' }}
+              />
+              <Legend />
+              <Bar 
+                dataKey="cv" 
+                fill="#3b82f6" 
+                name="CV%"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* EQAS Z-Score Chart */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Monthly Average EQAS Z-Score
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={zScoreData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis domain={[-0.5, 0.3]} />
+              <Tooltip 
+                formatter={(value) => [value.toFixed(2), 'Z-Score']}
+                labelStyle={{ color: '#374151' }}
+              />
+              <Legend />
+              <Bar 
+                dataKey="zScore" 
+                fill={(entry) => entry >= 0 ? "#10b981" : "#f59e0b"}
+                name="Z-Score"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center mt-4 space-x-6 text-sm">
+            <div className="flex items-center">
+              <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
+              <span>Positive Z-Score</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-4 h-4 bg-yellow-500 rounded mr-2"></div>
+              <span>Negative Z-Score</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Equipment Status</h3>
+            <p className="text-sm text-gray-600">
+              All pre-analytical QI within target limits except July 2024 downtime
+            </p>
+            <div className="mt-3">
+              <span className="text-2xl font-bold text-red-500">20hrs</span>
+              <span className="text-sm text-gray-500 ml-2">Max Downtime (Dec)</span>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Report TAT</h3>
+            <p className="text-sm text-gray-600">
+              Maintained within target limit with backup equipment support
+            </p>
+            <div className="mt-3">
+              <span className="text-2xl font-bold text-green-500">✓</span>
+              <span className="text-sm text-gray-500 ml-2">Target Achieved</span>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Quality Control</h3>
+            <p className="text-sm text-gray-600">
+              CV% and Z-scores monitored monthly for analytical precision
+            </p>
+            <div className="mt-3">
+              <span className="text-2xl font-bold text-blue-500">0.30%</span>
+              <span className="text-sm text-gray-500 ml-2">Max CV% (Dec)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center text-sm text-gray-500">
+          <p>Prepared & Issued by Quality Manager | Reviewed & Approved by Laboratory Director</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LabQualityIndicators;
